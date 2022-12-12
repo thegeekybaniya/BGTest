@@ -1,46 +1,27 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react'
-import { View, Text, StyleSheet, Button, useWindowDimensions } from 'react-native'
-import { gestureHandlerRootHOC, PanGestureHandler } from 'react-native-gesture-handler'
-import Animated, {
-  useAnimatedGestureHandler,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated'
+import React, { useState } from 'react'
+import { View, Text, Button, StyleSheet } from 'react-native'
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler'
 import SwipeModal from './components/SwipeModal'
 
-const SPRING_CONFIG = {
-  damping: 80,
-  overshootClamping: true,
-  restDisplacementThreshold: 0.1,
-  restSpeedThreshold: 0.1,
-  stiffness: 500,
-}
+const Content = () => (
+  <View
+    style={{
+      height: '100%',
+      width: '100%',
+      backgroundColor: 'white',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <Text>Modal Content 🔥 </Text>
+  </View>
+)
 
 const App = () => {
-  const [open, setOpen] = useState(false)
-  const dimensions = useWindowDimensions()
-  const bottom = useSharedValue(dimensions.height)
-  const style = useAnimatedStyle(() => {
-    return {
-      bottom: bottom.value,
-    }
-  })
-  const gestureHandler = useAnimatedGestureHandler({
-    onStart(_, context) {
-      context.startBottom = bottom.value
-    },
-    onActive(event, context) {
-      bottom.value = context.startBottom - event.translationY
-    },
-    onEnd() {
-      if (bottom.value > dimensions.height / 2 - 200) {
-        bottom.value = dimensions.height
-      } else {
-        bottom.value = dimensions.height / 2
-      }
-    },
-  })
+  const [openTop, setOpenTop] = useState(false)
+  const [openBottom, setOpenBottom] = useState(false)
+  const [openLeft, setOpenLeft] = useState(false)
+  const [openRight, setOpenRight] = useState(false)
   return (
     <>
       <View
@@ -51,57 +32,90 @@ const App = () => {
         }}
       >
         <Button
-          title="Open Sheet"
+          title="Open Top"
           onPress={() => {
-            // if (!open) {
-            //   bottom.value = withSpring(dimensions.height / 2, SPRING_CONFIG)
-            // } else {
-            //   bottom.value = withSpring(dimensions.height, SPRING_CONFIG)
-            // }
-            // setOpen(!open)
-
-            setOpen(!open)
+            setOpenTop(!openTop)
+          }}
+        />
+        <Button
+          title="Open Bottom"
+          onPress={() => {
+            setOpenBottom(!openBottom)
+          }}
+        />
+        <Button
+          title="Open Left"
+          onPress={() => {
+            setOpenLeft(!openLeft)
+          }}
+        />
+        <Button
+          title="Open Right"
+          onPress={() => {
+            setOpenRight(!openRight)
           }}
         />
       </View>
-      <SwipeModal openingDirection='right' coveragePercent={80} isVisible={open} onClose={()=>{setOpen(false)}}>
-        <View
-          style={{ height: '100%', backgroundColor: 'white', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
-        >
-          <Text>AWESOME</Text>
-        </View>
+      <SwipeModal
+        openingDirection="up"
+        coveragePercent={80}
+        isVisible={openTop}
+        onClose={() => {
+          setOpenTop(false)
+        }}
+        backdropStyleCustom={styles.customBackdropStyle}
+        modalStyleCustom={styles.customModalStyle}
+      >
+        <Content />
       </SwipeModal>
-      {/* <PanGestureHandler onGestureEvent={gestureHandler}>
-        
-        <Animated.View
-          style={[
-            {
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              backgroundColor: 'white',
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              elevation: 5,
-              padding: 20,
-              justifyContent: 'center',
-              alignItems: 'center',
-            },
-            style,
-          ]}
-        >
-          <Text>Sheet</Text>
-        </Animated.View>
-      </PanGestureHandler> */}
+      <SwipeModal
+        openingDirection="down"
+        coveragePercent={80}
+        isVisible={openBottom}
+        onClose={() => {
+          setOpenBottom(false)
+        }}
+        backdropStyleCustom={styles.customBackdropStyle}
+        modalStyleCustom={styles.customModalStyle}
+        enableBackOnBackdropPress={false}
+      >
+        <Content />
+      </SwipeModal>
+      <SwipeModal
+        openingDirection="left"
+        coveragePercent={80}
+        isVisible={openLeft}
+        onClose={() => {
+          setOpenLeft(false)
+        }}
+        backdropStyleCustom={styles.customBackdropStyle}
+        modalStyleCustom={styles.customModalStyle}
+      >
+        <Content />
+      </SwipeModal>
+      <SwipeModal
+        openingDirection="right"
+        coveragePercent={80}
+        isVisible={openRight}
+        onClose={() => {
+          setOpenRight(false)
+        }}
+        backdropStyleCustom={styles.customBackdropStyle}
+        modalStyleCustom={styles.customModalStyle}
+        enableBackOnBackdropPress={false}
+      >
+        <Content />
+      </SwipeModal>
     </>
   )
 }
 
+const styles = StyleSheet.create({
+  customBackdropStyle: {
+    backgroundColor: 'rgba(52, 52, 52, 0.8)',
+  },
+  customModalStyle: {
+    backgroundColor: 'white',
+  },
+})
 export default gestureHandlerRootHOC(App)
