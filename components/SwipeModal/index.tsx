@@ -1,4 +1,4 @@
-import { StyleSheet, Text, useWindowDimensions, View, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, Text, useWindowDimensions, View, TouchableWithoutFeedback, Dimensions } from 'react-native'
 import React, { useEffect, useMemo } from 'react'
 import { PanGestureHandler } from 'react-native-gesture-handler'
 import Animated, {
@@ -14,11 +14,20 @@ export default function SwipeModal({
   openingDirection = 'up',
   children,
   coveragePercent = 80,
-  isVisible,
+  isVisible=true,
   onClose,
   enableBackOnBackdropPress = true,
   backdropStyleCustom = {},
   modalStyleCustom = {},
+}: {
+  openingDirection: 'up' | 'down' | 'left' | 'right'
+  children?: React.ReactNode
+  coveragePercent?: number
+  isVisible?: boolean
+  onClose?: Function
+  enableBackOnBackdropPress?: boolean
+  backdropStyleCustom?: any
+  modalStyleCustom?: any
 }) {
   const dimensions = useWindowDimensions()
 

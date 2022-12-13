@@ -1,121 +1,67 @@
-import React, { useState } from 'react'
-import { View, Text, Button, StyleSheet } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { View, Text, Button, StyleSheet, FlatList, useWindowDimensions, StatusBar, Animated } from 'react-native'
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler'
-import SwipeModal from './components/SwipeModal'
+import HomeCarousel from './components/HomeCarousel'
+import InfiniteScrollDisplay from './screens/InfiniteScrollDisplay'
+import SwipeModalDisplay from './screens/SwipeModalDisplay'
 
-const Content = () => (
-  <View
-    style={{
-      height: '100%',
-      width: '100%',
-      backgroundColor: 'white',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-  >
-    <Text>Modal Content 🔥 </Text>
-  </View>
-)
+function getColor() {
+  // generates random pastel color
+  return 'hsl(' + 360 * Math.random() + ',' + (25 + 70 * Math.random()) + '%,' + (85 + 10 * Math.random()) + '%)'
+}
 
-const App = () => {
-  const [openTop, setOpenTop] = useState(false)
-  const [openBottom, setOpenBottom] = useState(false)
-  const [openLeft, setOpenLeft] = useState(false)
-  const [openRight, setOpenRight] = useState(false)
+function HomeScreen({ navigation }: { navigation: any }) {
   return (
-    <>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Button
+        title="Swipe Modals"
+        onPress={() => {
+          navigation.navigate('Swipe Modals')
         }}
-      >
-        <Button
-          title="Open Top"
-          onPress={() => {
-            setOpenTop(!openTop)
-          }}
-        />
-        <Button
-          title="Open Bottom"
-          onPress={() => {
-            setOpenBottom(!openBottom)
-          }}
-        />
-        <Button
-          title="Open Left"
-          onPress={() => {
-            setOpenLeft(!openLeft)
-          }}
-        />
-        <Button
-          title="Open Right"
-          onPress={() => {
-            setOpenRight(!openRight)
-          }}
-        />
-      </View>
-      <SwipeModal
-        openingDirection="up"
-        coveragePercent={80}
-        isVisible={openTop}
-        onClose={() => {
-          setOpenTop(false)
+      />
+      <Button
+        title="Infinite Scroll"
+        onPress={() => {
+          navigation.navigate('Infinite Scroll')
         }}
-        backdropStyleCustom={styles.customBackdropStyle}
-        modalStyleCustom={styles.customModalStyle}
-      >
-        <Content />
-      </SwipeModal>
-      <SwipeModal
-        openingDirection="down"
-        coveragePercent={80}
-        isVisible={openBottom}
-        onClose={() => {
-          setOpenBottom(false)
-        }}
-        backdropStyleCustom={styles.customBackdropStyle}
-        modalStyleCustom={styles.customModalStyle}
-        enableBackOnBackdropPress={false}
-      >
-        <Content />
-      </SwipeModal>
-      <SwipeModal
-        openingDirection="left"
-        coveragePercent={80}
-        isVisible={openLeft}
-        onClose={() => {
-          setOpenLeft(false)
-        }}
-        backdropStyleCustom={styles.customBackdropStyle}
-        modalStyleCustom={styles.customModalStyle}
-      >
-        <Content />
-      </SwipeModal>
-      <SwipeModal
-        openingDirection="right"
-        coveragePercent={80}
-        isVisible={openRight}
-        onClose={() => {
-          setOpenRight(false)
-        }}
-        backdropStyleCustom={styles.customBackdropStyle}
-        modalStyleCustom={styles.customModalStyle}
-        enableBackOnBackdropPress={false}
-      >
-        <Content />
-      </SwipeModal>
-    </>
+      />
+    </View>
   )
 }
 
-const styles = StyleSheet.create({
-  customBackdropStyle: {
-    backgroundColor: 'rgba(52, 52, 52, 0.8)',
-  },
-  customModalStyle: {
-    backgroundColor: 'white',
-  },
-})
-export default gestureHandlerRootHOC(App)
+const Stack = createNativeStackNavigator()
+
+const App = () => {
+  // const { height, width } = useWindowDimensions()
+  // const flatlistElement = useRef()
+  // const [tabs, setTabs] = useState([getColor(), getColor()])
+
+  // const addTab = useCallback(() => {
+  //   setTabs([...tabs, getColor()])
+  // }, [tabs])
+  // const getWrappableData = () => {
+  //   console.log([tabs[tabs.length - 1], ...tabs, tabs[0]])
+  //   return [tabs[tabs.length - 1], ...tabs, tabs[0]]
+  // }
+
+  return (
+    // <View style={{ flex: 1, justifyContent: 'space-around', marginTop: StatusBar.currentHeight }}>
+    //   <Button onPress={addTab} title="Add Tab" />
+    //   <Text>Total {tabs.length} Tabs</Text>
+    //   <View style={{ flex: 1 }}>
+    //     <HomeCarousel data={tabs} />
+    //   </View>
+    // </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home Ground">
+        <Stack.Screen name="Home Ground" component={HomeScreen} />
+        <Stack.Screen name="Swipe Modals" component={SwipeModalDisplay} />
+        <Stack.Screen name="Infinite Scroll" component={InfiniteScrollDisplay} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
+}
+
+export default App
