@@ -1,9 +1,8 @@
-import { StyleSheet, Text, useWindowDimensions, View, TouchableWithoutFeedback, Dimensions } from 'react-native'
+import { StyleSheet, useWindowDimensions, View, TouchableWithoutFeedback } from 'react-native'
 import React, { useEffect, useMemo } from 'react'
 import { PanGestureHandler } from 'react-native-gesture-handler'
 import Animated, {
   runOnJS,
-  runOnUI,
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
